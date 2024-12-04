@@ -142,3 +142,6 @@ dcode.set_background_height('auto')
 dcode.set_background_size('auto', 'auto')
 ```
 Note, by default the background does not resize with code changes as a common approach is to create a larger background space and then add code to it dynamically. If you want the background to auto-adjust to your code changes, pass `autosize=True` or `autowidth=True` or `autoheight=True` as kwargs to any of the edit actions.
+
+## TODO
+- Fix slight vertical misalignment between newly inserted glyphs and previous glyphs which can sometimes occur.
