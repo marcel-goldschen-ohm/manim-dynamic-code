@@ -10,11 +10,18 @@ Because editing the code in a `Code` Mobject after initial creation is absolute 
 3. `Transform` animations from one `Code` Mobject to another look terrible (my opinion), which means custom animation sequences are required.
 4. Animations which add/remove code glyphs create new references to the animated glyph objects which is an absolute nightmare if you need to keep track of those references (which you do if you want to perform additional edits to the code later). Thus, custom logic that resets glyph references after an animation where the code changes is needed.
 
-`DynamicCode` does all of the above.
+‼️ `DynamicCode` does all of the above and can be used as a drop-in replacement for `Code` Mobjects.
 
-In my personal opinion, I find this solution incredibly hacky. It seems to me to be exposing some serious deficiencies in the way Manim does things including 1) the absolute horror of not being able to rely on an object reference after an animation, and 2) the nightmare of not having a straighforward scene hierarchy (e.g., cannot remove an object from the scene if it belongs to some other group you don't know about).
+## How does `DynamicCode` work?
+Basically, `DynamicCode` creates temporary `Code` Mobjects under the hood to generate the SVG glyphs with syntax highlighting and handles rearranging these glyphs as needed to edit the code. For animations that actually look like you are inserting or removing code chunks (compare with `Transform` from an original `Code` Mobject to a new `Code` Mobject which looks terrible in comparison), `DynamicCode` animates things in 3 steps:
+1. Animates rearranging and/or hiding (set opacity to zero) current Mobjects as per the changes to the code to ensure smooth shifting of glyphs. No new glyphs are added or old glyphs are removed during this step as otherwise Manim defaults to a horrible looking transform (presumably due to the lack of a 1:1 mapping of points in the transform).
+2. Outside of any animation, new glyphs are added in the correct positions or unneeded glyphs (these were hidden in the previous step) are removed. Newly added glyphs have opacity=0 so they are not visible yet.
+3. Animates writing newly added glyphs by giving them a non-zero opacity one glyph at a time.
+4. Updates new glyph references to the new references generated during the animation itself (seriously folks, this is crazy), and cleans up the scene's polluted mobjects where these new glyph references are found.
 
-Caveat, I am rather new to Manim, so if I am just going about things the wrong way, please PLEASE let me know about it.
+🤔 In my personal opinion, I find this solution incredibly hacky. It seems to me to be exposing some serious deficiencies in the way Manim does things including 1) the absolute horror of not being able to rely on an object reference after an animation, and 2) the nightmare of not having a straighforward scene hierarchy (e.g., cannot remove an object from the scene if it belongs to some other group you don't know about). The way I've implemented the sequential animations also means they don't quack like a normal animation and cannot be combined with other animations, which kind of sucks, but I don't know a good way around this.
+
+⚠️ Caveat, I am rather new to Manim, so if I am just going about things the wrong way, please PLEASE let me know about it.
 
 ## Install
 Just put `DynamicCode.py` where your project can find it and import it.
@@ -23,6 +30,7 @@ Just put `DynamicCode.py` where your project can find it and import it.
 Run `DynamicCode.py` to see some examples of animating code changes in `DynamicCodeExampleScene`.
 
 ## Instantiate just like `Code` Mobjects
+`DynamicCode` can be used as a drop-in replacement for `Code`.
 ```python
 from DynamicCode import DynamicCode
 
@@ -68,8 +76,9 @@ append two
 new lines
 """, player=self, run_time=1)
 
-# Note, do NOT do this! You can only animate as shown above.
-dcode.animate.append_code("append to last line")
+# !! Do NOT do this!
+#    You can only animate as shown above.
+self.play(dcode.animate.append_code("append to last line"))
 ```
 
 ## Animation or not?
@@ -102,6 +111,9 @@ Can be animated.
 ```python
 # Remove first char of first line through 2nd char of 6th line.
 dcode.remove_code((0, 0), (5, 2))
+
+# Remove 6th line.
+dcode.remove_code((5, 0), (6, 0))
 ```
 
 ## Clear code
