@@ -244,6 +244,11 @@ class DynamicCode(VGroup):
         tmp.code.remove(*new_line_vgroups)
         new_line_vgroups.set_opacity(opacity)
 
+        # color new glyphs?
+        color = kwargs.pop('color', None)
+        if color is not None:
+            new_line_vgroups.set_color(color)
+
         # extract post split glyphs from self if needed
         if insertion_line_changed and n_post_insert_glyphs > 0:
             self.code[start_line_index].remove(*post_insert_glyphs)
