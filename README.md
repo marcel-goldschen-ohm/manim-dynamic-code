@@ -51,7 +51,11 @@ dcode.append_code("""
 append two
 new lines
 """)
+
+# resize background to accomodate appended code.
+dcode.append_code("append to last line", autosize=True)
 ```
+Note, by default the background does not resize with code changes as a common approach is to create a larger background space and then add code to it dynamically. If you want the background to auto-adjust to your code changes, pass `autosize=True` or `autowidth=True` or `autoheight=True` as kwargs to any of the edit actions.
 
 ## Append code (with animation)
 ```python
@@ -69,7 +73,7 @@ dcode.animate.append_code("append to last line")
 ```
 
 ## Animation or not?
-For most of the actions described here, if `kwargs['player']` is defined and references the parent scene, then the action will be animated, otherwise it will be instantaneous. See above examples for appending code.
+For most of the actions described here, if `player=scene` is passed as a kwarg, then the action will be animated, otherwise it will be instantaneous. See above examples for appending code.
 
 An unfortuante side-effect of this hacky way to animate code change sequences is that the animations cannot be played simultaneously with other animations. I'm not sure how to work around this at the moment.
 
@@ -112,3 +116,17 @@ Can be animated.
 # Replaces current code with mycode.
 dcode.set_code(code=mycode)
 ```
+
+## Background
+The background can be resized independently of the code. This is useful if you want to create a space and then add code into it dynamically.
+```python
+dcode.set_background_width(width)
+dcode.set_background_height(height)
+dcode.set_background_size(width, height)
+
+# to fit the background to the current code
+dcode.set_background_width('auto')
+dcode.set_background_height('auto')
+dcode.set_background_size('auto', 'auto')
+```
+Note, by default the background does not resize with code changes as a common approach is to create a larger background space and then add code to it dynamically. If you want the background to auto-adjust to your code changes, pass `autosize=True` or `autowidth=True` or `autoheight=True` as kwargs to any of the edit actions.
