@@ -1,6 +1,8 @@
 # manim-dynamic-code
 Dynamic code animations in Manim.
 
+Developed for ManimCE, not tested with any other version of Manim.
+
 ## Why not just use the default `Code` Mobject?
 Because editing the code in a `Code` Mobject after initial creation is absolute hell. There are multiple reasons for this including:
 1. `Code` Mobjects have multiple references to individual SVG glyphs across multiple groups which makes removing the glyphs from the scene a nightmare.
@@ -16,6 +18,9 @@ Caveat, I am rather new to Manim, so if I am just going about things the wrong w
 
 ## Install
 Just put `DynamicCode.py` where your project can find it and import it.
+
+## Quick start
+Run `DynamicCode.py` to see some examples of animating code changes in `DynamicCodeExampleScene`.
 
 ## Instantiate just like `Code` Mobjects
 ```python
@@ -50,13 +55,17 @@ new lines
 
 ## Append code (with animation)
 ```python
-# self is the parent Scene
+# If the parent Scene (e.g., self) is given as the player kwarg,
+# then the action will be animated.
 dcode.append_code("append to last line", player=self, run_time=1)
 dcode.append_code("append to 4th line", line_index=3, player=self, run_time=1)
 dcode.append_code("""
 append two
 new lines
 """, player=self, run_time=1)
+
+# Note, do NOT do this! You can only animate as shown above.
+dcode.animate.append_code("append to last line")
 ```
 
 ## Animation or not?
@@ -65,6 +74,7 @@ For most of the actions described here, if `kwargs['player']` is defined and ref
 An unfortuante side-effect of this hacky way to animate code change sequences is that the animations cannot be played simultaneously with other animations. I'm not sure how to work around this at the moment.
 
 ## Prepend code
+Can be animated.
 ```python
 dcode.prepend_code("prepend to first line")
 dcode.prepend_code("prepend to 4th line", line_index=3)
@@ -74,6 +84,7 @@ new lines
 ```
 
 ## Insert code
+Can be animated.
 ```python
 dcode.insert_code((4, 2), "insert at the 3rd charachter of the 5th line")
 dcode.insert_code((4, 2), """append to first two charachters of 5th line
@@ -83,7 +94,21 @@ prepend to the (5th line excluding the first two charachters)""")
 ```
 
 ## Remove code
+Can be animated.
+```python
+# Remove first char of first line through 2nd char of 6th line.
+dcode.remove_code((0, 0), (5, 2))
+```
 
 ## Clear code
+Cannot be animated, will always be instantaneous.
+```python
+dcode.clear_code()
+```
 
 ## Set code
+Can be animated.
+```python
+# Replaces current code with mycode.
+dcode.set_code(code=mycode)
+```
