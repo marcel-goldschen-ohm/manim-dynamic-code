@@ -145,3 +145,4 @@ Note, by default the background does not resize with code changes as a common ap
 
 ## TODO
 - Fix slight vertical misalignment between newly inserted glyphs and previous glyphs which can sometimes occur.
+- Scroll animation.
