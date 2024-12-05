@@ -417,6 +417,31 @@ class DynamicCode(VGroup):
         self.clear_code()
         self.insert_code(0, code.strip('\n'), **kwargs)
 
+    def scroll_to_last_line(self, **kwargs):
+        if len(self.code) < 2:
+            return
+        
+        # if player is supplied, then play the scroll animation
+        # otherwise just update the code instantly
+        player: Scene = kwargs.pop('player', None)
+        if player is not None:
+            run_time = kwargs.pop('run_time', 1)
+            lag_ratio = 1.0 / (len(self.code) - 1)
+            dy = self.code[0].get_edge_center(UP)[1] - self.code[-1].get_edge_center(UP)[1]
+            pre_animation_mobjects = player.mobjects.copy()
+            player.play(
+                self.code[-1].animate(run_time=run_time).shift(dy * UP),
+                FadeOut(self.code[:-1], run_time=run_time)#, lag_ratio=lag_ratio)
+                # self.code[:-1].animate(run_time=run_time, lag_ratio=lag_ratio).set_opacity(0)
+            )
+            player.mobjects = pre_animation_mobjects
+        else:
+            self.code[-1].align_to(self.code[0], direction=UP)
+        
+        self.code.remove(*self.code[:-1])
+        lines = self.code_string.strip('\n').split('\n')
+        self.code_string = lines[-1]
+    
     @staticmethod
     def _get_char_pos(pos: int | tuple[int, int], lines: list[str] | VGroup) -> tuple[int, int]:
         if len(lines) == 0:
