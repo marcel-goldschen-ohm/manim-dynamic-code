@@ -23,6 +23,11 @@ Basically, `DynamicCode` creates temporary `Code` Mobjects under the hood to gen
 
 ⚠️ Caveat, I am rather new to Manim, so if I am just going about things the wrong way, please PLEASE let me know about it.
 
+## Support
+This is all done in my free time. If you find it useful, why not buy me a cup of coffee? Cheers!
+
+<a href="https://www.buymeacoffee.com/marcel.goldschen.ohm" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
+
 ## Install
 Just put `DynamicCode.py` where your project can find it and import it.
 
