@@ -1,5 +1,5 @@
 # manim-dynamic-code
-Dynamic code animations in Manim.
+Drop-in replacement for `Code` Mobjects enabling dynamic code animations in Manim.
 
 Developed for ManimCE, not tested with any other version of Manim.
 
