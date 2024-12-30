@@ -7,7 +7,7 @@ Developed for ManimCE, not tested with any other version of Manim.
 Because editing the code in a `Code` Mobject after initial creation is absolute hell. There are multiple reasons for this including:
 1. `Code` Mobjects have multiple references to individual SVG glyphs across multiple groups which makes removing the glyphs from the scene a nightmare.
 2. Indexes of code string characters and `Code` Mobject SVG glyphs does not necessarily  match as there are no glyphs for whitespace, which makes editing the displayed code non-straightforward.
-3. `Transform` animations from one `Code` Mobject to another look terrible (my opinion), which means custom animation sequences are required.
+3. `Transform` animations from one `Code` Mobject to another look terrible if only a part of the code is changing, which means custom animation sequences are required.
 4. Animations which add/remove code glyphs create new references to the animated glyph objects which is an absolute nightmare if you need to keep track of those references (which you do if you want to perform additional edits to the code later). Thus, custom logic that resets glyph references after an animation where the code changes is needed.
 
 ‼️ `DynamicCode` does all of the above and can be used as a drop-in replacement for `Code` Mobjects.
