@@ -13,11 +13,11 @@ class DynamicCode(VGroup):
             tmp_code = Code(file_name=file_name)
             kwargs["code"] = tmp_code.code_string
             kwargs["language"] = tmp_code.language
-        if "code" in kwargs:
+        elif "code" in kwargs:
             kwargs["code"] = kwargs["code"].strip('\n')
         
-        clone_attrs_from = kwargs.pop("clone_attrs_from", None)
-        if clone_attrs_from is not None:
+        if "clone_attrs_from" in kwargs:
+            clone_attrs_from = kwargs.pop("clone_attrs_from")
             kwargs["tab_width"] = clone_attrs_from.tab_width
             kwargs["line_spacing"] = clone_attrs_from.line_spacing
             kwargs["font_size"] = clone_attrs_from.font_size
@@ -229,6 +229,14 @@ class DynamicCode(VGroup):
         if insertion_line_changed and n_post_insert_glyphs > 0:
             # move post split glyphs to their new positions
             post_insert_glyphs.move_to(tmp.code[len(pre_lines)+len(new_lines)-1][-n_post_insert_glyphs:])
+        
+        if insertion_line_changed and n_pre_insert_glyphs > 0:
+            # move pre split glyphs in case the new code slightly alters their vertical position
+            pre_insert_glyphs.align_to(tmp.code[len(pre_lines)][:n_pre_insert_glyphs], UP)
+        
+        # shift pre lines up in case the new code slightly alters their vertical position
+        if len(pre_lines) > 0:
+            self.code[:len(pre_lines)].align_to(tmp.code, direction=UP)
         
         # shift post lines down to their new positions
         if len(post_lines) > 0:
@@ -465,6 +473,16 @@ class DynamicCode(VGroup):
             char_index = len(lines[line_index]) + char_index
         
         return line_index, char_index
+    
+    # @staticmethod
+    # def strip_multiline_initial_indent(code: str) -> str:
+    #     if '\n' in code.strip('\n'):
+    #         lines = code.split('\n')
+    #         pos = lines[0].find(lines[0].lstrip())
+    #         if pos > 0:
+    #             lines = [line[pos:] for line in lines if len(line) > pos]
+    #         code = '\n'.join(lines)
+    #     return code
 
 
 class DynamicCodeExampleScene(Scene):
